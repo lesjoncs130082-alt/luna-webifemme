@@ -1,0 +1,9 @@
+{
+    "name": "Luna — WebiFemme",
+    "short_name": "Luna",
+    "description": "Agent éditorial WebiFemme — accès équipe uniquement",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#faf6ef",
+    "theme_color": "#a9803f"
+}
