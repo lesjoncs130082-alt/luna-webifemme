@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+  <html lang="fr">
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Luna — agent éditorial WebiFemme</title>
+<link rel="manifest" href="manifest.json">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Poiret+One&display=swap" rel="stylesheet">
+  <style>
+  :root{
+    --ivoire:#faf6ef;
+    --dore:#d9b876; --dore-deep:#a9803f;
+    --sauge:#a9bfa0; --sauge-deep:#5f7a55;
+    --turquoise:#8fc1bd; --turquoise-deep:#3f7d78;
+  --rose:#e3b7b0; --rose-deep:#b06a5f;
+      --lavande:#c3b6d6; --lavande-deep:#7a63a0;
+      --encre:#3a3430; --encre-doux:#6b6259;
+  --trait:#e4dcc9;
+    }
+*{box-sizing:border-box;}
+body{
+    margin:0; background:var(--ivoire); color:var(--encre);
+  font-family:'Cormorant Garamond', serif; font-size:18px; line-height:1.55;
+  padding:32px 18px 80px;
+}
+.wrap{max-width:760px; margin:0 auto;}
+header{text-align:center; margin-bottom:34px;}
+.logo{font-family:'Poiret One', sans-serif; font-size:44px; letter-spacing:2px; color:var(--lavande-deep);}
+.soustitre{font-style:italic; color:var(--encre-doux); font-size:19px; margin-top:2px;}
+.baseline{font-size:15px; color:var(--sauge-deep); margin-top:10px; max-width:520px; margin-left:auto; margin-right:auto;}
+.badge-equipe{
+  display:inline-block; margin-top:12px; padding:5px 14px; border-radius:999px;
+  background:#fff; border:1px solid var(--lavande-deep); color:var(--lavande-deep);
+    font-size:13px; letter-spacing:.5px; text-transform:uppercase;
+}
+
+.carte{
+    background:#fff; border:1px solid var(--trait); border-radius:18px;
+    padding:26px 24px; margin-bottom:22px; box-shadow:0 2px 14px rgba(169,128,63,.06);
+}
+h2.titre-section{
+  font-family:'Poiret One', sans-serif; font-size:22px; color:var(--dore-deep);
+  letter-spacing:1px; margin:0 0 14px;
+}
+
+/* --- Portail d'accès équipe --- */
+  #portail{max-width:420px; margin:60px auto;}
+  #portail input{
+  width:100%; padding:13px 14px; border-radius:12px; border:1px solid var(--trait);
+  font-family:inherit; font-size:17px; background:var(--ivoire); margin-top:10px;
+}
+#portail button{
+    display:block; width:100%; margin-top:16px; padding:14px; border:none;
+  border-radius:14px; background:var(--lavande-deep); color:#fff; font-family:'Poiret One',sans-serif;
+  font-size:18px; letter-spacing:1px; cursor:pointer;
+  }
+#portail .erreur-code{color:var(--rose-deep); font-size:14px; margin-top:10px; display:none;}
+  #outil{display:none;}
+
+select, textarea{
+    width:100%; padding:14px; border-radius:12px;
+  border:1px solid var(--trait); font-family:inherit; font-size:17px;
+    resize:vertical; background:var(--ivoire);
+}
+textarea{min-height:90px;}
+  select:focus, textarea:focus{outline:2px solid var(--lavande); border-color:transparent;}
+
+.groupe-label{font-size:15px; color:var(--encre-doux); margin:18px 0 8px; font-style:italic;}
+.chips{display:flex; flex-wrap:wrap; gap:8px;}
+  .pilier-chip{
+    border:1px solid var(--trait); background:var(--ivoire); color:var(--encre);
+  padding:8px 15px; border-radius:999px; cursor:pointer; font-family:'Cormorant Garamond',serif;
+  font-size:15px; transition:.15s; user-select:none;
+}
+  .pilier-chip:hover{border-color:var(--lavande-deep);}
+.pilier-chip[data-active="true"]{
+  background:var(--lavande-deep); border-color:var(--lavande-deep);
+  color:#fff; font-weight:600;
+  }
+.moteur-toggle{display:flex; gap:8px; margin-top:6px;}
+  .moteur-toggle .pilier-chip{flex:1; text-align:center;}
+  #moteur .pilier-chip[data-active="true"]{background:var(--turquoise-deep); border-color:var(--turquoise-deep);}
+
+button#btn-generer{
+      display:block; width:100%; margin-top:22px; padding:15px; border:none;
+  border-radius:14px; background:var(--dore-deep); color:#fff; font-family:'Poiret One',sans-serif;
+  font-size:19px; letter-spacing:1px; cursor:pointer; transition:.15s;
+}
+button#btn-generer:hover{background:#8a6a34;}
+button#btn-generer:disabled{background:#c9bfa8; cursor:wait;}
+
+#zone-resultat{margin-top:30px;}
+.bloc-accroche{font-style:italic; font-size:19px; color:var(--encre-doux); margin-bottom:22px; padding:16px 18px; background:#fff; border-left:3px solid var(--lavande-deep); border-radius:0 12px 12px 0;}
+
+.carte-contenu{
+    background:linear-gradient(135deg, #fff, #f8f4fb);
+    border:1px solid var(--lavande-deep); border-radius:18px; padding:26px 24px; margin-bottom:22px;
+}
+.carte-contenu h3{font-family:'Poiret One',sans-serif; color:var(--lavande-deep); font-size:22px; margin:0 0 14px;}
+.carte-contenu ol, .carte-contenu ul{margin:0; padding-left:20px;}
+.carte-contenu li{margin-bottom:8px;}
+
+.bloc-legende{background:#fff; border:1px solid var(--trait); border-radius:12px; padding:16px 18px; margin-bottom:16px; white-space:pre-wrap;}
+  .bloc-hashtags{color:var(--turquoise-deep); font-style:italic; margin-bottom:22px;}
+
+.statut{
+    display:inline-block; padding:6px 14px; border-radius:999px; font-size:14px; margin-bottom:18px;
+}
+.statut.pret{background:#eaf3e8; color:var(--sauge-deep); border:1px solid var(--sauge-deep);}
+.statut.attente{background:#fbf1ec; color:var(--rose-deep); border:1px solid var(--rose-deep);}
+
+.attention{
+    background:#fbf1ec; border:1px solid var(--rose-deep); border-radius:12px;
+      padding:16px 18px; margin:22px 0; font-size:15px; color:var(--encre-doux);
+}
+
+.actions-fiche{display:flex; gap:10px; margin-top:20px;}
+.actions-fiche button{
+    flex:1; padding:11px; border-radius:10px; border:1px solid var(--trait);
+  background:#fff; font-family:'Cormorant Garamond',serif; font-size:15px; cursor:pointer;
+  }
+.actions-fiche button:hover{border-color:var(--lavande-deep);}
+
+.msg-attente{text-align:center; color:var(--encre-doux); font-style:italic; padding:30px 0;}
+.msg-erreur{background:#fbeaea; border:1px solid #c98c8c; color:#8c3a3a; padding:14px 18px; border-radius:12px;}
+  </style>
+  </head>
+  <body>
+  <div class="wrap">
+
+  <!-- Portail d'accès équipe : Luna est réservée à Séverine et Isa -->
+  <div id="portail" class="carte">
+    <div class="logo" style="text-align:center;">Luna</div>
+    <div class="soustitre" style="text-align:center;">accès équipe WebiFemme</div>
+    <div class="groupe-label">Code d'accès équipe</div>
+    <input type="password" id="code-acces" placeholder="Code partagé (Séverine / Isa)">
+    <button onclick="verifierAcces()">Entrer</button>
+    <div class="erreur-code" id="erreur-code">Code incorrect — vérifie auprès de Séverine.</div>
+</div>
+
+<div id="outil">
+
+<header>
+<div class="logo">Luna</div>
+<div class="soustitre">agent éditorial WebiFemme</div>
+<div class="baseline">Décris le module, le format et la Connaissance validée de référence — Luna rédige un brouillon de contenu prêt à relire, jamais une affirmation santé sans source.</div>
+  <div class="badge-equipe">Réservé à l'équipe — Séverine &amp; Isa</div>
+  </header>
+
+  <div class="carte">
+  <h2 class="titre-section">Quel contenu aujourd'hui ?</h2>
+
+  <div class="groupe-label">Module / pilier concerné</div>
+  <select id="module">
+    <option value="Masterclass 0 — Bienvenue dans WebiFemme">Masterclass 0 — Bienvenue dans WebiFemme</option>
+  <option value="Module 1 — Le système nerveux">Module 1 — Le système nerveux</option>
+    <option value="Module 2 — Le sommeil">Module 2 — Le sommeil</option>
+  <option value="Module 3 — L'alimentation vivante">Module 3 — L'alimentation vivante</option>
+    <option value="Module 4 — Hydratation & énergie cellulaire">Module 4 — Hydratation &amp; énergie cellulaire</option>
+  <option value="Module 5 — Mouvement & circulation du vivant">Module 5 — Mouvement &amp; circulation du vivant</option>
+    <option value="Module 6 — Les hormones parlent le langage du système nerveux">Module 6 — Les hormones parlent le langage du système nerveux</option>
+  <option value="Module 7 — Le grand chef d'orchestre">Module 7 — Le grand chef d'orchestre</option>
+    <option value="Masterclass Finale — Retrouver son étoile">Masterclass Finale — Retrouver son étoile</option>
+  <option value="Storytelling de marque / autre">Storytelling de marque / autre</option>
+</select>
+
+<div class="groupe-label">Format</div>
+<div class="chips" id="format">
+    <button type="button" class="pilier-chip" data-chip="Carrousel" data-active="true">Carrousel</button>
+    <button type="button" class="pilier-chip" data-chip="Post simple">Post simple</button>
+    <button type="button" class="pilier-chip" data-chip="Reel (script)">Reel (script)</button>
+    <button type="button" class="pilier-chip" data-chip="Newsletter">Newsletter</button>
+  </div>
+
+  <div class="groupe-label">Sujet précis / angle souhaité</div>
+  <textarea id="sujet" placeholder="Ex : pourquoi la fatigue de 16h n'est pas un manque de volonté, avec un exercice de carte du stress..."></textarea>
+
+  <div class="groupe-label">Connaissance validée de référence (obligatoire pour tout sujet santé)</div>
+  <textarea id="connaissance" style="min-height:60px;" placeholder="Ex : Fiche-Pilier-Transversal-SystemeNerveux-v1 (statut Validé) — ou laisse vide si aucune n'existe encore"></textarea>
+
+  <div class="groupe-label">Luna rédige avec <span style="font-style:italic;">— tu peux comparer les deux</span></div>
+<div class="moteur-toggle" id="moteur">
+  <button type="button" class="pilier-chip" data-chip="claude" data-active="true">Claude</button>
+    <button type="button" class="pilier-chip" data-chip="openai">ChatGPT</button>
+  </div>
+
+  <button id="btn-generer" onclick="genererContenu()">Générer le contenu</button>
+</div>
+
+<div id="zone-resultat"></div>
+
+</div>
+</div>
+
+<script>
+const CODE_STOCKAGE = "luna_code_acces";
+
+function verifierAcces(){
+    const code = document.getElementById('code-acces').value.trim();
+  if(!code){ return; }
+  sessionStorage.setItem(CODE_STOCKAGE, code);
+  document.getElementById('portail').style.display = 'none';
+  document.getElementById('outil').style.display = 'block';
+  document.getElementById('erreur-code').style.display = 'none';
+}
+
+(function initAcces(){
+  const code = sessionStorage.getItem(CODE_STOCKAGE);
+  if(code){
+    document.getElementById('portail').style.display = 'none';
+    document.getElementById('outil').style.display = 'block';
+  }
+})();
+
+let formatChoisi = "Carrousel";
+let moteurChoisi = "claude";
+
+document.querySelectorAll('#format .pilier-chip').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      document.querySelectorAll('#format .pilier-chip').forEach(x=>x.setAttribute('data-active','false'));
+    b.setAttribute('data-active','true');
+    formatChoisi = b.getAttribute('data-chip');
+});
+});
+document.querySelectorAll('#moteur .pilier-chip').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      document.querySelectorAll('#moteur .pilier-chip').forEach(x=>x.setAttribute('data-active','false'));
+    b.setAttribute('data-active','true');
+    moteurChoisi = b.getAttribute('data-chip');
+});
+});
+
+function parseLunaTexte(texte){
+    const fiche = { accroche:"", contenu:"", legende:"", hashtags:"", statut:"", note:"" };
+  const morceaux = texte.split(/###([A-Z_]+)###/);
+  for(let i=1; i<morceaux.length-1; i+=2){
+    const tag = morceaux[i].trim();
+    const contenu = (morceaux[i+1] || "").trim();
+    if(!contenu) continue;
+    switch(tag){
+case "ACCROCHE": fiche.accroche = contenu; break;
+case "CONTENU": fiche.contenu = contenu; break;
+case "LEGENDE": fiche.legende = contenu; break;
+case "HASHTAGS": fiche.hashtags = contenu; break;
+case "STATUT": fiche.statut = contenu; break;
+case "NOTE": fiche.note = contenu; break;
+}
+}
+  return fiche;
+}
+
+function rendreContenu(fiche){
+    const zone = document.getElementById('zone-resultat');
+  let html = "";
+
+  const enAttente = /attente|solis/i.test(fiche.statut);
+  html += `<div class="statut ${enAttente ? 'attente' : 'pret'}">${fiche.statut || (enAttente ? 'Brouillon — en attente de validation Solis' : 'Prêt à relire')}</div>`;
+
+  if(fiche.accroche){
+    html += `<div class="bloc-accroche">${fiche.accroche}</div>`;
+  }
+  if(fiche.contenu){
+    html += `<div class="carte-contenu"><h3>Structure</h3><div>${fiche.contenu.replace(/\n/g,'<br>')}</div></div>`;
+}
+  if(fiche.legende){
+    html += `<div class="groupe-label">Légende</div><div class="bloc-legende">${fiche.legende}</div>`;
+  }
+  if(fiche.hashtags){
+    html += `<div class="bloc-hashtags">${fiche.hashtags}</div>`;
+  }
+  if(fiche.note){
+    html += `<div class="attention">${fiche.note}</div>`;
+  }
+
+  html += `<div class="actions-fiche">
+        <button onclick="window.print()">Imprimer</button>
+        <button onclick="copierContenu()">Copier</button>
+      </div>`;
+
+  zone.innerHTML = html;
+  window.__dernierContenu = fiche;
+}
+
+function copierTexteAvecRepli(texte){
+    if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(texte).then(
+            ()=>alert('Contenu copié !'),
+            ()=>copierRepli(texte)
+          );
+    } else {
+    copierRepli(texte);
+    }
+}
+function copierRepli(texte){
+    try{
+    const zone = document.createElement('textarea');
+    zone.value = texte;
+    zone.style.position = 'fixed';
+    zone.style.opacity = '0';
+    document.body.appendChild(zone);
+    zone.focus();
+    zone.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(zone);
+    if(ok){ alert('Contenu copié !'); return; }
+    } catch(e){ }
+  prompt('Ton navigateur bloque la copie automatique ici. Sélectionne et copie ce texte manuellement (Ctrl+C) :', texte);
+}
+function copierContenu(){
+    const f = window.__dernierContenu;
+  if(!f) return;
+  let texte = `${f.accroche}\n\n${f.contenu}\n\n${f.legende}\n\n${f.hashtags}`;
+  copierTexteAvecRepli(texte);
+}
+
+async function genererContenu(){
+  const module = document.getElementById('module').value;
+  const sujet = document.getElementById('sujet').value.trim();
+  const connaissance = document.getElementById('connaissance').value.trim();
+  if(!sujet){
+    alert("Décris le sujet ou l'angle du contenu.");
+    return;
+  }
+  const btn = document.getElementById('btn-generer');
+  btn.disabled = true; btn.textContent = "Luna rédige...";
+  document.getElementById('zone-resultat').innerHTML = `<div class="msg-attente">Luna relie ce module à un contenu prêt à relire...</div>`;
+
+  const prompt = `Tu es Luna, l'agent production éditoriale du système EDEN (WebiFemme). Tu rédiges les Contenus (fiches pédagogiques, posts réseaux sociaux, newsletters) et gères le calendrier de publication.
+
+Règle non négociable : tout contenu touchant à la santé (huiles essentielles, compléments alimentaires, un des 5 piliers du vivant) doit s'appuyer sur une Connaissance au statut "Validé". Si aucune Connaissance validée n'est fournie ci-dessous, tu rédiges quand même un brouillon utile mais tu marques clairement le statut comme "en attente de validation Solis" plutôt que de présenter une affirmation santé comme vérifiée.
+
+Ton ton est chaleureux, direct, incarné — jamais clinique ni culpabilisant. Tu écris pour des femmes qui veulent reprendre le contrôle de leur santé, pas pour des professionnels de santé.
+
+  Module / pilier concerné : ${module}
+Format demandé : ${formatChoisi}
+Sujet / angle souhaité : ${sujet}
+Connaissance validée de référence : ${connaissance || "AUCUNE FOURNIE — applique la règle non négociable ci-dessus"}
+
+Réponds UNIQUEMENT avec ce format à balises, rempli avec un contenu réel et personnalisé (pas de crochets ni de placeholders) :
+
+###ACCROCHE###
+[1-2 phrases d'accroche qui donnent envie de lire/regarder]
+  ###CONTENU###
+  [structure du contenu : une ligne par slide si Carrousel, script court si Reel, corps du texte si Post ou Newsletter]
+###LEGENDE###
+[légende complète prête à publier, ton chaleureux WebiFemme, avec un CTA doux à la fin]
+###HASHTAGS###
+[5 à 8 hashtags pertinents séparés par des espaces]
+###STATUT###
+["Prêt à relire" si une Connaissance validée a été fournie, sinon "Brouillon — en attente de validation Solis"]
+###NOTE###
+[si statut = attente, explique en une phrase ce qui manque ; sinon laisser une ligne vide]
+###FIN###`;
+
+  try{
+    const reponse = await fetch("/api/luna", {
+      method: "POST",
+      headers: {"content-type": "application/json"},
+      body: JSON.stringify({ prompt, moteur: moteurChoisi, codeAcces: sessionStorage.getItem(CODE_STOCKAGE) })
+});
+    const data = await reponse.json();
+    if(!reponse.ok) throw new Error(data.error || "Erreur serveur.");
+    const texte = data.texte || "";
+    const debut = texte.indexOf("###ACCROCHE###");
+    if(debut === -1) throw new Error("Format de réponse inattendu.");
+    const fiche = parseLunaTexte(texte.slice(debut));
+    if(!fiche.accroche && !fiche.contenu){
+      throw new Error("Le contenu généré est vide.");
+    }
+    rendreContenu(fiche);
+} catch(err){
+      document.getElementById('zone-resultat').innerHTML = `<div class="msg-erreur">Un souci est survenu pendant la génération (${err.message || err}). Réessaie, ou reformule ta demande.</div>`;
+} finally {
+      btn.disabled = false; btn.textContent = "Générer le contenu";
+}
+}
+</script>
+  </body>
+  </html>
